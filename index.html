@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    
+
+    <title>HLF Script Generator</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row mt-5 shadow justify-content-end p-2 ">
+           <button class="btn btn-dark" id='addrow'data-toggle="tooltip" data-placement="bottom" title="Add more Organization">+</button>
+        </div>
+
+        <div class="row shadow mt-5">
+            <table id="MyTable" class="table table-bordered ">
+                <thead>
+                    <tr>
+                        <th>
+                            Organizations Name
+                        </th>
+                        <th>
+                            Organization Domain
+                        </th>
+                        <th>
+                            EnableNodeOUs	
+                        </th>
+                        <th>
+                            Total Peers
+                        </th>
+                        <th>
+                            SANS
+                        </th>
+                        <th>
+                            Total Users
+                        </th>
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input class="form-control" type="text" value="Org1">
+                        </td>
+                        <td>
+                            <input class="form-control" type="text" value="org1.example.com">
+                        </td>
+                        <td>
+                                <select class="form-control">
+                                  <option selected value="1">Yes</option>
+                                  <option value="0">No</option>
+                                </select>
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" min=1 oninput="validity.valid||(value='');" value="2">
+                        </td>
+                        <td>
+                            <input class="form-control" type="text" value="localhost">
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" min=1 oninput="validity.valid||(value='');" value="1">
+                        </td>
+                        <td>
+                            <button class="btn btn-dark" id="del">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            
+            </table>
+                <button class="btn btn-dark btn-block m-4" id="crtbtn">Create Yaml file</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.14.0/js-yaml.min.js"></script>
+    <script src="index.js"></script>
+
+    <script>
+    $(document).ready(function(){
+
+        $("#MyTable").on("click", "#del", function() {
+             $(this).closest("tr").remove();
+        });
+
+
+        $("#addrow").click(function(){
+            newrow=
+            `
+            <tr>
+                        <td>
+                            <input class="form-control" type="text" value="Org1">
+                        </td>
+                        <td>
+                            <input class="form-control" type="text" value="org1.example.com">
+                        </td>
+                        <td>
+                                <select class="form-control">
+                                  <option selected value="1">Yes</option>
+                                  <option value="0">No</option>
+                                </select>
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" min=1 oninput="validity.valid||(value='');" value="2">
+                        </td>
+                        <td>
+                            <input class="form-control" type="text" value="localhost">
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" min=1 oninput="validity.valid||(value='');" value="1">
+                        </td>
+                        <td>
+                            <button class="btn btn-dark" id="del">Delete</button>
+                        </td>
+                    </tr>
+            `
+
+            $("tbody").append(newrow)
+
+        })
+
+    }); 
+
+    $("#crtbtn").click(createOrgYaml)
+        
+    </script>
+
+
+</body>
+</html>
