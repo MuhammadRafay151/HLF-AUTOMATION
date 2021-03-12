@@ -5,6 +5,9 @@
      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
     
 
     <title>HLF Script Generator</title>
@@ -12,11 +15,58 @@
 <body>
     <div class="container">
         <div class="row mt-5 shadow justify-content-end p-2 ">
-           <button class="btn btn-dark" id='addrow'data-toggle="tooltip" data-placement="bottom" title="Add more Organization">+</button>
+            
+            <h4 class="col text-left"><b>Orderer Organizations</b></h4>
+            <button class="btn btn-dark" id='ordaddrow' data-toggle="tooltip" data-placement="bottom" title="Add more Organization">+</button>
+          
         </div>
+     
+        <div class="row shadow mt-2">
+            <table id="OrdererTable" class="table table-bordered ">
+                <thead>
+                    <tr>
+                        <th>
+                            Organization Domain
+                        </th>
+                        <th>
+                            Port
+                        </th>
+                        <th>
+                            Action
+            
+                        </th>
+                       
 
-        <div class="row shadow mt-5">
-            <table id="MyTable" class="table table-bordered ">
+                    </tr>
+                   
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input class="form-control" type="text" value="orderer.example.com">
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" value=6050>
+                        </td>
+                        <td>
+                            
+                            <button style="color: red;" data-toggle="tooltip" data-placement="bottom" title="delete items" class="btn material-icons" id="del">delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            
+            </table>
+               
+    </div>
+
+    <div class="row mt-5 shadow justify-content-end p-2 ">
+            
+        <h4 class="col text-left"><b>Peer Organizations</b></h4>
+        <button class="btn btn-dark" id='addrow' data-toggle="tooltip" data-placement="bottom" title="Add more Organization">+</button>
+      
+    </div>
+        <div class="row shadow mt-2">
+            <table id="PeerTable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th>
@@ -36,6 +86,9 @@
                         </th>
                         <th>
                             Total Users
+                        </th>
+                        <th>
+                            Port
                         </th>
                         <th>
                             Action
@@ -67,7 +120,10 @@
                             <input class="form-control" type="number" min=1 oninput="validity.valid||(value='');" value="1">
                         </td>
                         <td>
-                            <button class="btn btn-dark" id="del">Delete</button>
+                            <input class="form-control" type="number" value=9051>
+                        </td>
+                        <td>
+                            <button style="color: red;"  data-toggle="tooltip" data-placement="bottom" title="delete items" class="btn material-icons" id="del">delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -92,9 +148,39 @@
     <script>
     $(document).ready(function(){
 
-        $("#MyTable").on("click", "#del", function() {
+        $("#OrdererTable").on("click", "#del", function() {
              $(this).closest("tr").remove();
         });
+
+        $("#PeerTable").on("click", "#del", function() {
+             $(this).closest("tr").remove();
+        });
+
+        
+
+        $("#ordaddrow").click(function(){
+            newrow=
+            `
+                    <tr>
+                        <td>
+                            <input class="form-control" type="text" value="orderer.example.com">
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" value=6050>
+                        </td>
+                        <td>
+                            <button style="color: red;"  data-toggle="tooltip" data-placement="bottom" title="delete items" class="btn material-icons" id="del">delete</button>
+                        </td>
+                    </tr>
+         
+            `
+
+            $("#OrdererTable tbody").append(newrow)
+
+        })
+
+
+        
 
 
         $("#addrow").click(function(){
@@ -123,12 +209,15 @@
                             <input class="form-control" type="number" min=1 oninput="validity.valid||(value='');" value="1">
                         </td>
                         <td>
-                            <button class="btn btn-dark" id="del">Delete</button>
+                            <input class="form-control" type="number" value=9051>
+                        </td>
+                        <td>
+                            <button style="color: red;"  data-toggle="tooltip" data-placement="bottom" title="delete items" class="btn material-icons" id="del">delete</button>
                         </td>
                     </tr>
             `
 
-            $("tbody").append(newrow)
+            $("#PeerTable tbody").append(newrow)
 
         })
 
