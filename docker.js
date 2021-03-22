@@ -4,7 +4,7 @@ function create_docker_compose_ca(){
     console.log(OrgTable)
 
     var orgname= OrgTable.rows[0].cells[0].children[0].value;
-    var port= OrgTable.rows[0].cells[6].children[0].valueAsNumber;
+    var port= OrgTable.rows[0].cells[3].children[0].valueAsNumber;
 
     var contname="ca_"+orgname;
 
@@ -47,6 +47,9 @@ function create_docker_compose_ca(){
     newlink.setAttribute("download", `docker-compose-ca.yaml`);
 
     newlink.click();
+
+    docker_compose_couch()
+    docker_compose_test_net()
   
   }
 
