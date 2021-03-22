@@ -49,16 +49,7 @@
                             Organization Domain
                         </th>
                         <th>
-                            EnableNodeOUs	
-                        </th>
-                        <th>
                             Total Peers
-                        </th>
-                        <th>
-                            SANS
-                        </th>
-                        <th>
-                            Total Users
                         </th>
                         <th>
                             Port
@@ -75,19 +66,7 @@
                             <input class="form-control" type="text" value="org1.example.com">
                         </td>
                         <td>
-                                <select class="form-control">
-                                  <option selected value="1">Yes</option>
-                                  <option value="0">No</option>
-                                </select>
-                        </td>
-                        <td>
                             <input class="form-control" onchange="myFunction(value)" type="number" min=1 oninput="validity.valid||(value='');" value="1">
-                        </td>
-                        <td>
-                            <input class="form-control" type="text" value="localhost">
-                        </td>
-                        <td>
-                            <input class="form-control"  type="number" min=1 oninput="validity.valid||(value='');" value="1">
                         </td>
                         <td>
                             <input class="form-control" type="number" value=9051>
@@ -114,7 +93,13 @@
                             couchdb
                         </th>
                         <th>
-                            Port
+                            Couchdb Port
+                        </th>
+                        <th>
+                            Peer Port
+                        </th>
+                        <th>
+                            Blockchain Port
                         </th>
 
                     </tr>
@@ -123,10 +108,16 @@
                 <tbody>
                     <tr>
                         <td>
-                            <input class="form-control" type="text" value="peer0.ku.com">
+                            <input class="form-control" type="text" value="peer0.org1.example.com">
                         </td>  
                         <td>
                             <input class="form-control" type="text" value="couchdb1">
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" value=6050>
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" value=6050>
                         </td>
                         <td>
                             <input class="form-control" type="number" value=6050>
@@ -155,19 +146,27 @@
          function myFunction(value) {
 
             $("#PeerTable tbody").html("")
+            var peerdomain=document.querySelector("#OrgTable tbody").rows[0].cells[1].children[0].value;
+
             for (let i = 0; i < value; i++) {
             newrow=
             `
             <tr>
                 <tr>
                         <td>
-                            <input class="form-control" type="text" value="peer0.ku.com">
+                            <input class="form-control" type="text" value="peer${i}.${peerdomain}">
                         </td>
                         <td>
                             <input class="form-control" type="text" value="couchdb1">
                         </td>
                         <td>
                             <input class="form-control" type="number" value=6050>
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" value=9051>
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" value=9052>
                         </td>
                     </tr>
             `
@@ -181,7 +180,7 @@
 
         }
 
-    $("#crtbtn").click(docker_compose_couch)
+    $("#crtbtn").click(docker_compose_test_net)
         
     </script>
 

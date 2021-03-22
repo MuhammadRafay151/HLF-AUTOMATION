@@ -52,6 +52,12 @@ function create_docker_compose_ca(){
 
 function docker_compose_couch(){
 
+   var OrgTable=document.querySelector("#OrgTable tbody")
+   var PeerTable=document.querySelector("#PeerTable tbody")
+
+   var totalpeers= OrgTable.rows[0].cells[3].children[0].valueAsNumber;
+
+   
     var docker_compose_couch={
         "version": "2",
         "networks": {
@@ -59,50 +65,59 @@ function docker_compose_couch(){
               "name": "first-network"
            }
         },
-        "services": {}
+        "services": []
      }
 
-     for (let i = 0; i < 1; i++) {
+     var peer_data =[]
+     var couchdb_data=[]
+
+     for (let i = 0; i < totalpeers; i++) {
+
+         console.log(PeerTable)
+         var couchdb= PeerTable.rows[i].cells[1].children[0].value;
+         var peerdomain= PeerTable.rows[i].cells[0].children[0].value;
+         var port= PeerTable.rows[i].cells[2].children[0].valueAsNumber;
         
-         var tempo={
-            "couchdb4": {
-                "container_name": "couchdb4",
+            couchdb_data=({
+            couchdb: {
+                "container_name": couchdb,
                 "image": "couchdb:3.1",
                 "environment": [
                    "COUCHDB_USER=admin",
                    "COUCHDB_PASSWORD=adminpw"
                 ],
                 "ports": [
-                   "9984:5984"
+                   `${port}:5984`
                 ],
                 "networks": [
                    "test"
                 ]
              },
-         }
-     }
+         })
 
-     for (let i = 0; i < 1; i++) {
-        
-        var temp1={
-            "peer0.ku.com": {
+         peer_data.push({
+            peerdomain: {
                 "environment": [
                    "CORE_LEDGER_STATE_STATEDATABASE=CouchDB",
-                   "CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb4:5984",
+                   `CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=${couchdb}:5984`,
                    "CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin",
                    "CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw"
                 ],
                 "depends_on": [
-                   "couchdb4"
+                   couchdb
                 ]
              },
-        }
-    }
+        })
 
-    docker_compose_couch.services=push(tempo)
-    docker_compose_couch.services=Object.assign(temp1)
+
+     }
+      
+
+    docker_compose_couch.services.push(couchdb_data)
+    docker_compose_couch.services.push(peer_data)
 
     console.log(docker_compose_couch.services)
+    console.log(docker_compose_couch)
 
     
    let yamlStr = jsyaml.safeDump(docker_compose_couch)
@@ -112,7 +127,96 @@ function docker_compose_couch(){
        type: "text/yaml"
    }));
 
-   newlink.setAttribute("download", `docker_compose_couch.yaml`);
+   newlink.setAttribute("download", `docker-compose-couch.yaml`);
+
+   newlink.click();
+
+
+}
+
+function docker_compose_test_net(){
+
+   var OrgTable=document.querySelector("#OrgTable tbody")
+   var PeerTable=document.querySelector("#PeerTable tbody")
+
+   var totalpeers= OrgTable.rows[0].cells[2].children[0].valueAsNumber;
+
+   var docker_compose_test_net={
+      "version": "2",
+      "networks": {
+        "test": {
+          "name": "first-network"
+        }
+      }
+      
+    }
+
+
+   var peer_services={};
+   var volumes={}
+   for (let i = 0; i < totalpeers; i++) {
+
+      var orgname= OrgTable.rows[0].cells[0].children[0].value;
+      var orgdomain= OrgTable.rows[0].cells[1].children[0].value;
+      var peerdomain= PeerTable.rows[i].cells[0].children[0].value;
+      var peerport= PeerTable.rows[i].cells[3].children[0].valueAsNumber;
+      var blockchainport= PeerTable.rows[i].cells[4].children[0].valueAsNumber;
+
+     
+
+      volumes[peerdomain]=null
+      
+      peer_services[peerdomain]={
+         "container_name": peerdomain,
+         "image": "hyperledger/fabric-peer:$IMAGE_TAG",
+         "environment": [
+           "CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock",
+           "CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=first-network",
+           "FABRIC_LOGGING_SPEC=INFO",
+           "CORE_PEER_TLS_ENABLED=true",
+           "CORE_PEER_PROFILE_ENABLED=true",
+           "CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt",
+           "CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key",
+           "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt",
+           `CORE_PEER_ID=${peerdomain}`,
+           `CORE_PEER_ADDRESS=${peerdomain}:${peerport}`,
+           `CORE_PEER_LISTENADDRESS=0.0.0.0:${peerport}`,
+           `CORE_PEER_CHAINCODEADDRESS=${peerdomain}:${blockchainport}`,
+           `CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${blockchainport}`,
+           `CORE_PEER_GOSSIP_BOOTSTRAP=${peerdomain}:${peerport}`,
+           `CORE_PEER_GOSSIP_EXTERNALENDPOINT=${peerdomain}:${peerport}`,
+           `CORE_PEER_LOCALMSPID=${orgname}MSP`
+         ],
+         "volumes": [
+           "/var/run/:/host/var/run/",
+           `../organizations/peerOrganizations/${orgdomain}/peers/${peerdomain}/msp:/etc/hyperledger/fabric/msp`,
+           `../organizations/peerOrganizations/${orgdomain}/peers/${peerdomain}/tls:/etc/hyperledger/fabric/tls`,
+           `${peerdomain}:/var/hyperledger/production`
+         ],
+         "working_dir": "/opt/gopath/src/github.com/hyperledger/fabric/peer",
+         "command": "peer node start",
+         "ports": [
+           `${peerport}:${peerport}`
+         ],
+         "networks": [
+           "test"
+         ]
+       }
+
+
+   }
+   
+   docker_compose_test_net["volumes"]=volumes;
+   docker_compose_test_net["services"]=peer_services;
+
+   let yamlStr = jsyaml.safeDump(docker_compose_test_net)
+   const newlink = document.createElement("a");
+
+   newlink.href = URL.createObjectURL(new Blob([yamlStr], {
+       type: "text/yaml"
+   }));
+
+   newlink.setAttribute("download", `docker-compose-test-net.yaml`);
 
    newlink.click();
 
