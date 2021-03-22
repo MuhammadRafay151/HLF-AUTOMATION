@@ -55,7 +55,7 @@ function docker_compose_couch(){
    var OrgTable=document.querySelector("#OrgTable tbody")
    var PeerTable=document.querySelector("#PeerTable tbody")
 
-   var totalpeers= OrgTable.rows[0].cells[3].children[0].valueAsNumber;
+   var totalpeers= OrgTable.rows[0].cells[2].children[0].valueAsNumber;
 
    
     var docker_compose_couch={
@@ -68,56 +68,47 @@ function docker_compose_couch(){
         "services": []
      }
 
-     var peer_data =[]
-     var couchdb_data=[]
+     var services_data ={}
+
+     console.log(PeerTable)
 
      for (let i = 0; i < totalpeers; i++) {
 
-         console.log(PeerTable)
          var couchdb= PeerTable.rows[i].cells[1].children[0].value;
          var peerdomain= PeerTable.rows[i].cells[0].children[0].value;
-         var port= PeerTable.rows[i].cells[2].children[0].valueAsNumber;
-        
-            couchdb_data=({
-            couchdb: {
-                "container_name": couchdb,
-                "image": "couchdb:3.1",
-                "environment": [
-                   "COUCHDB_USER=admin",
-                   "COUCHDB_PASSWORD=adminpw"
-                ],
-                "ports": [
-                   `${port}:5984`
-                ],
-                "networks": [
-                   "test"
-                ]
-             },
-         })
+         var couchdbport= PeerTable.rows[i].cells[2].children[0].valueAsNumber;
 
-         peer_data.push({
-            peerdomain: {
-                "environment": [
-                   "CORE_LEDGER_STATE_STATEDATABASE=CouchDB",
-                   `CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=${couchdb}:5984`,
-                   "CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin",
-                   "CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw"
-                ],
-                "depends_on": [
-                   couchdb
-                ]
-             },
-        })
-
+         services_data[couchdb]={
+            "container_name": couchdb,
+            "image": "couchdb:3.1",
+            "environment": [
+               "COUCHDB_USER=admin",
+               "COUCHDB_PASSWORD=adminpw"
+            ],
+            "ports": [
+               `${couchdbport}:5984`
+            ],
+            "networks": [
+               "test"
+            ]
+         }
+         
+         services_data[peerdomain]= {
+            "environment": [
+               "CORE_LEDGER_STATE_STATEDATABASE=CouchDB",
+               `CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=${couchdb}:5984`,
+               "CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin",
+               "CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw"
+            ],
+            "depends_on": [
+               couchdb
+            ]
+         }
 
      }
       
 
-    docker_compose_couch.services.push(couchdb_data)
-    docker_compose_couch.services.push(peer_data)
-
-    console.log(docker_compose_couch.services)
-    console.log(docker_compose_couch)
+    docker_compose_couch["services"]=services_data;
 
     
    let yamlStr = jsyaml.safeDump(docker_compose_couch)

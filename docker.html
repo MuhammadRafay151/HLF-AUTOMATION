@@ -151,7 +151,6 @@
             for (let i = 0; i < value; i++) {
             newrow=
             `
-            <tr>
                 <tr>
                         <td>
                             <input class="form-control" type="text" value="peer${i}.${peerdomain}">
@@ -168,7 +167,7 @@
                         <td>
                             <input class="form-control" type="number" value=9052>
                         </td>
-                    </tr>
+                </tr>
             `
                 
             $("#PeerTable tbody").append(newrow)
@@ -180,7 +179,7 @@
 
         }
 
-    $("#crtbtn").click(docker_compose_test_net)
+    $("#crtbtn").click(docker_compose_couch)
         
     </script>
 
