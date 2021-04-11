@@ -1,5 +1,5 @@
 import Vue from "vue";
-import VueRouter from "vue-router";S
+import VueRouter from "vue-router";
 import scriptsRoutes from "./Scripts"
 import NProgress from "nprogress"
 import 'nprogress/nprogress.css';
