@@ -71,7 +71,7 @@ function createOrgYaml(){
 
     for (var i = 0; i < total_org; i++) {
 
-        let yamlStr = jsyaml.safeDump(orglist[i])
+        let yamlStr = jsyaml.dump(orglist[i])
         const newlink = document.createElement("a");
 
         newlink.href = URL.createObjectURL(new Blob([yamlStr], {
@@ -377,7 +377,7 @@ function createConfigtx(peerorg){
 
 
 
-    let yamlStr = jsyaml.safeDump(configtx)
+    let yamlStr = jsyaml.dump(configtx)
     const newlink = document.createElement("a");
 
     newlink.href = URL.createObjectURL(new Blob([yamlStr], {

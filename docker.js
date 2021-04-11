@@ -37,7 +37,7 @@ function create_docker_compose_ca(){
       }
    }
 
-   let yamlStr = jsyaml.safeDump(docker_compose_ca)
+   let yamlStr = jsyaml.dump(docker_compose_ca)
     const newlink = document.createElement("a");
 
     newlink.href = URL.createObjectURL(new Blob([yamlStr], {
@@ -114,7 +114,7 @@ function docker_compose_couch(){
     docker_compose_couch["services"]=services_data;
 
     
-   let yamlStr = jsyaml.safeDump(docker_compose_couch)
+   let yamlStr = jsyaml.dump(docker_compose_couch)
    const newlink = document.createElement("a");
 
    newlink.href = URL.createObjectURL(new Blob([yamlStr], {
@@ -203,7 +203,7 @@ function docker_compose_test_net(){
    docker_compose_test_net["volumes"]=volumes;
    docker_compose_test_net["services"]=peer_services;
 
-   let yamlStr = jsyaml.safeDump(docker_compose_test_net)
+   let yamlStr = jsyaml.dump(docker_compose_test_net)
    const newlink = document.createElement("a");
 
    newlink.href = URL.createObjectURL(new Blob([yamlStr], {
