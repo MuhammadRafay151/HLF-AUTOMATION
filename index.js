@@ -71,7 +71,7 @@ function createOrgYaml(){
 
     for (var i = 0; i < total_org; i++) {
 
-        let yamlStr = jsyaml.dump(orglist[i])
+        let yamlStr = jsyaml.dump(orglist[i],{"lineWidth":"1000"})
         const newlink = document.createElement("a");
 
         newlink.href = URL.createObjectURL(new Blob([yamlStr], {
@@ -377,7 +377,7 @@ function createConfigtx(peerorg){
 
 
 
-    let yamlStr = jsyaml.dump(configtx)
+    let yamlStr = jsyaml.dump(configtx,{"lineWidth":"1000"})
     const newlink = document.createElement("a");
 
     newlink.href = URL.createObjectURL(new Blob([yamlStr], {
