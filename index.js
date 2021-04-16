@@ -42,11 +42,11 @@ function createOrgYaml(){
             "Policies": {
               "Readers": {
                 "Type": "Signature",
-                "Rule": `OR(${orgmsp}.admin, ${orgmsp}.peer, ${orgmsp}.client)`
+                "Rule": `OR('${orgmsp}.admin', '${orgmsp}.peer', '${orgmsp}.client')`
               },
               "Writers": {
                 "Type": "Signature",
-                "Rule": `OR(${orgmsp}.admin, ${orgmsp}.client)`
+                "Rule": `OR('${orgmsp}.admin', '${orgmsp}.client')`
               },
               "Admins": {
                 "Type": "Signature",
@@ -127,7 +127,6 @@ function createConfigtx(peerorg){
         orderer.OrdererEndpoints.push(ordererdomain+":"+port)
     }
     
-    console.log(orderer.OrdererEndpoints)
    
     
 
@@ -336,7 +335,8 @@ function createConfigtx(peerorg){
     }
 
     configtx.Organizations.push(orderer)
-    configtx.Organizations.push(peerorg)
+
+    
 
 
     var Consenters=[]
@@ -358,21 +358,31 @@ function createConfigtx(peerorg){
       Addresses.push(ordererdomain+":"+port)
       
     }
-    console.log(Consenters)
-    console.log(Addresses)
 
-    configtx.Orderer.EtcdRaft.Consenters.push(Consenters)
-    configtx.Orderer.Addresses.push(Addresses)
+
+    for (let i = 0; i < Consenters.length; i++) {
+      configtx.Orderer.EtcdRaft.Consenters.push(Consenters[i])
+      configtx.Profiles.TwoOrgsOrdererGenesis.Orderer.EtcdRaft.Consenters.push(Consenters[i])
+    }
     
-    configtx.Profiles.TwoOrgsOrdererGenesis.Orderer.EtcdRaft.Consenters.push(Consenters)
-    configtx.Profiles.TwoOrgsOrdererGenesis.Orderer.Addresses.push(Addresses)
+    for (let i = 0; i < Addresses.length; i++) {
+      configtx.Orderer.Addresses.push(Addresses[i])
+    
+      configtx.Profiles.TwoOrgsOrdererGenesis.Orderer.Addresses.push(Addresses[i])  
+    }
+   
     configtx.Profiles.TwoOrgsOrdererGenesis.Orderer.Organizations.push(orderer)
 
-    configtx.Profiles.TwoOrgsOrdererGenesis.Consortiums.SampleConsortium.Organizations.push(peerorg)
 
-    configtx.Profiles.TwoOrgsChannel.Application.Organizations.push(peerorg)
+    for (let i = 0; i < peerorg.length; i++) {
+      configtx.Organizations.push(peerorg[i])
+      configtx.Profiles.TwoOrgsOrdererGenesis.Consortiums.SampleConsortium.Organizations.push(peerorg[i])
 
-    console.log(configtx)
+      configtx.Profiles.TwoOrgsChannel.Application.Organizations.push(peerorg[i])
+
+      
+    }
+
 
 
 
