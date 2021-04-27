@@ -1,3 +1,8 @@
+var zip = new JSZip();
+var folder = zip.folder("OrganizationsYaml");
+var Confolder = zip.folder("Config");
+
+
 function createOrgYaml(){
 
     var orglist=[]
@@ -74,13 +79,22 @@ function createOrgYaml(){
         let yamlStr = jsyaml.dump(orglist[i],{"lineWidth":"1000"})
         const newlink = document.createElement("a");
 
-        newlink.href = URL.createObjectURL(new Blob([yamlStr], {
-            type: "text/yaml"
-        }));
+        //newlink.href = URL.createObjectURL(new Blob([yamlStr], {
+        //    type: "text/yaml"
+        //}));
 
-        newlink.setAttribute("download", `${orglist[i].PeerOrgs.Name}.yaml`);
+        var blob = new Blob([yamlStr], { type: "text/yaml"});
 
-        newlink.click();
+        folder.file(`${orglist[i].PeerOrgs.Name}.yaml`, blob); 
+
+      
+
+        //saveAs(blob, `${orglist[i].PeerOrgs.Name}.yaml`);
+        
+
+        //newlink.setAttribute("download", `${orglist[i].PeerOrgs.Name}.yaml`);
+
+        //newlink.click();
         
     }
     console.log(peerorg)
@@ -390,12 +404,24 @@ function createConfigtx(peerorg){
     let yamlStr = jsyaml.dump(configtx,{"lineWidth":"1000"})
     const newlink = document.createElement("a");
 
-    newlink.href = URL.createObjectURL(new Blob([yamlStr], {
-        type: "text/yaml"
-    }));
 
-    newlink.setAttribute("download", `configtx.yaml`);
+    var blob = new Blob([yamlStr], { type: "text/yaml"});
 
-    newlink.click();
+    Confolder.file(`configtx.yaml`, blob); 
+
+    //newlink.href = URL.createObjectURL(new Blob([yamlStr], {
+    //    type: "text/yaml"
+    //}));
+
+    //newlink.setAttribute("download", `configtx.yaml`);
+
+    //newlink.click();
+
+
+    zip.generateAsync({type:"blob"})
+    .then(function(content) {
+     //see FileSaver.js
+     saveAs(content, "ConfigYaml.zip");
+});
  
 }

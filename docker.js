@@ -1,3 +1,8 @@
+var zip = new JSZip();
+var OrgTable=document.querySelector("#OrgTable tbody")
+var orgname= OrgTable.rows[0].cells[0].children[0].value;
+var folder = zip.folder(`${orgname}docker`);
+
 function create_docker_compose_ca(){
 
     var OrgTable=document.querySelector("#OrgTable tbody")
@@ -40,13 +45,17 @@ function create_docker_compose_ca(){
    let yamlStr = jsyaml.dump(docker_compose_ca,{"lineWidth":"1000"})
     const newlink = document.createElement("a");
 
-    newlink.href = URL.createObjectURL(new Blob([yamlStr], {
-        type: "text/yaml"
-    }));
+    //newlink.href = URL.createObjectURL(new Blob([yamlStr], {
+    //    type: "text/yaml"
+    //}));
+    var blob = new Blob([yamlStr], { type: "text/yaml"});
 
-    newlink.setAttribute("download", `docker-compose-ca.yaml`);
+    folder.file(`docker-compose-ca.yaml`, blob); 
 
-    newlink.click();
+
+    //newlink.setAttribute("download", `docker-compose-ca.yaml`);
+
+    //newlink.click();
 
     docker_compose_couch()
     docker_compose_test_net()
@@ -117,13 +126,18 @@ function docker_compose_couch(){
    let yamlStr = jsyaml.dump(docker_compose_couch,{"lineWidth":"1000"})
    const newlink = document.createElement("a");
 
-   newlink.href = URL.createObjectURL(new Blob([yamlStr], {
-       type: "text/yaml"
-   }));
 
-   newlink.setAttribute("download", `docker-compose-couch.yaml`);
+   var blob = new Blob([yamlStr], { type: "text/yaml"});
 
-   newlink.click();
+   folder.file(`docker-compose-couch.yaml`, blob); 
+
+   //newlink.href = URL.createObjectURL(new Blob([yamlStr], {
+   //    type: "text/yaml"
+   //}));
+
+   //newlink.setAttribute("download", `docker-compose-couch.yaml`);
+
+   //newlink.click();
 
 
 }
@@ -206,13 +220,23 @@ function docker_compose_test_net(){
    let yamlStr = jsyaml.dump(docker_compose_test_net,{"lineWidth":"1000"})
    const newlink = document.createElement("a");
 
-   newlink.href = URL.createObjectURL(new Blob([yamlStr], {
-       type: "text/yaml"
-   }));
+   var blob = new Blob([yamlStr], { type: "text/yaml"});
 
-   newlink.setAttribute("download", `docker-compose-test-net.yaml`);
+   folder.file(`docker-compose-test-net.yaml`, blob); 
 
-   newlink.click();
+   //newlink.href = URL.createObjectURL(new Blob([yamlStr], {
+   //    type: "text/yaml"
+   //}));
+
+   //newlink.setAttribute("download", `docker-compose-test-net.yaml`);
+
+   //newlink.click();
+
+   zip.generateAsync({type:"blob"})
+   .then(function(content) {
+    //see FileSaver.js
+    saveAs(content, `${orgname}Docker.zip`);
+});
 
 
 }
