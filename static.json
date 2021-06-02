@@ -1,7 +1,5 @@
 {
     "root": "/",
-    "clean_urls": true,
-    "routes": {
-        "/**": "index.html"
-    }
+    "clean_urls": true
+    
 }
